@@ -7,15 +7,21 @@
     --text-secondary: #555;
     --border-color: #ddd;
     --input-focus-color: #2575fc;
-    --button-bg: #2575fc;
+    --button-bg: #000000;
     --button-hover-bg: #1a5ac9;
     --shadow-light: rgba(0, 0, 0, 0.3);
     --shadow-button: rgba(37, 117, 252, 0.3);
     --canvas-wrapper-bg: #f8f8f8;
     --canvas-wrapper-border: #ddd;
     --canvas-ball-shadow: rgba(0,0,0,0.2);
-    --canvas-inner-bg: #FFF8F4;
+    --canvas-inner-bg: #FFF8F4; /* This should be the light mode default for the inner canvas */
     --line-svg-shadow: rgba(0,0,0,0.3);
+
+    /* Novas variáveis para gradientes radiais do corpo - Modo Claro */
+    --body-gradient-color1: #4444E1;
+    --body-gradient-color2: #E95426;
+    --body-gradient-color3: #D0B6EC;
+    --body-solid-fallback: #1a1a2e; /* Fallback para o corpo */
 }
 
 /* Dark Mode Variáveis */
@@ -31,78 +37,136 @@ body.dark-mode {
     --button-hover-bg: #5a4bba;
     --shadow-light: rgba(0, 0, 0, 0.6);
     --shadow-button: rgba(106, 90, 205, 0.4);
+    --canvas-wrapper-bg: #f8f8f8; /* Mantém o fundo do wrapper do canvas igual ao do modo claro */
+    --canvas-wrapper-border: #ddd; /* Mantém a borda do wrapper do canvas igual ao do modo claro */
+    --canvas-ball-shadow: rgba(255,255,255,0.1);
+    --canvas-inner-bg: #FFF8F4; /* Mantém o fundo interno do canvas igual ao --bg-container do modo claro */
+    --line-svg-shadow: rgba(255,255,255,0.2);
+
+    /* Novas variáveis para gradientes radiais do corpo - Modo Escuro */
+    --body-gradient-color1: #3a005f; /* Roxo mais escuro */
+    --body-gradient-color2: #0e3067; /* Azul mais escuro */
+    --body-gradient-color3: #0f1c3f; /* Cor sutil mais escura */
+    --body-solid-fallback: #1a1a2e; /* Mesmo fallback ou um escuro */
 }
 
 /* Estilos CSS Base */
 body {
     font-family: 'Montserrat', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    background: linear-gradient(to right, var(--bg-body-start) 0%, var(--bg-body-end) 100%);
     margin: 0;
-    overflow: auto;
-    padding: 20px;
+    padding: 0;
     box-sizing: border-box;
-    transition: background 0.5s ease;
+    transition: background 0.5s ease, color 0.5s ease; /* Garante transição para o background */
     color: var(--text-primary);
+
+    /* Gradientes de fundo para o corpo - AGORA USANDO VARIÁVEIS */
+    background:
+        radial-gradient(circle at 10% 20%, var(--body-gradient-color1) 0%, transparent 70%),
+        radial-gradient(circle at 80% 70%, var(--body-gradient-color2) 0%, transparent 70%),
+        radial-gradient(circle at 40% 95%, var(--body-gradient-color3) 0%, transparent 70%),
+        var(--body-solid-fallback); /* Cor sólida de fallback */
+    background-size: 150% 150%, 150% 150%, 150% 150%, cover;
+    background-position: top left, bottom right, bottom center, center center;
+    background-repeat: no-repeat;
 }
 
-.container {
-    background-color: var(--bg-container);
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px var(--shadow-light);
-    text-align: center;
+/* New main layout container */
+.main-layout {
+    display: flex; /* Makes sidebar and canvas area sit side-by-side */
+    width: 100%;
+    min-height: 100vh; /* Ensures it takes full viewport height */
+    box-sizing: border-box;
+}
+
+.controls-sidebar {
+    width: 20%; /* Takes 20% of the screen width */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in the width calculation */
+    border-right: 1px solid var(--border-color); /* Visual separator */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 20px;
-    max-width: 90%;
-    width: fit-content;
+    gap: 20px;
+    overflow-y: auto; /* Enable scrolling if controls exceed height */
+    align-items: flex-start; /* Align items to the start (left) */
+    background-color: var(--bg-container); /* Apply container background */
+    box-shadow: 0 0px 15px var(--shadow-light); /* Apply container shadow */
+    transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+.canvas-area {
+    width: 80%; /* Takes the remaining 80% */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    padding: 20px; /* Add some padding around the canvas */
+    box-sizing: border-box;
+    overflow: auto; /* In case the canvas is larger than the area */
+}
+
+
+/* Existing .container styles are now primarily for .controls-sidebar */
+/* The old `.container` class is no longer strictly needed for the main layout,
+    but its styling can be applied to `.controls-sidebar`. */
+.container {
+    /* This class likely defined the overall card-like container.
+        Its styles are now largely integrated into .controls-sidebar.
+        You can keep this if you still have an element with this class for other purposes,
+        but for the main layout, it's replaced by .main-layout, .controls-sidebar, and .canvas-area. */
+    background-color: var(--bg-container); /* Re-applied to sidebar */
+    padding: 25px 30px; /* Re-applied to sidebar */
+    border-radius: 10px; /* Re-applied to sidebar */
+    box-shadow: 0 10px 30px var(--shadow-light); /* Re-applied to sidebar */
+    text-align: center; /* Adjust as needed for sidebar content */
+    display: flex; /* Adjust as needed for sidebar content */
+    flex-direction: column; /* Adjust as needed for sidebar content */
+    align-items: center; /* Adjust as needed for sidebar content */
+    margin: 0; /* Remove margin, layout handles spacing */
+    max-width: 100%; /* No longer constrained by fixed width */
+    width: 100%; /* Take full width of sidebar */
     transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 h1 {
     color: var(--text-primary);
-    margin-top: -10px;
+    margin-top: 0px; /* Adjust margin for sidebar top */
+    margin-bottom: 20px;
     font-size: 2.2em;
     font-weight: 600;
     transition: color 0.5s ease;
+    align-self: flex-start; /* Align H1 to the left within sidebar */
 }
 
 .controls {
-    margin-bottom: 5px;
+    margin-bottom: 5px; /* Keep this if needed for spacing inside controls */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    max-width: 700px;
+    align-items: center; /* Adjust as needed, flex-start might be better for labels */
+    gap: 15px; /* Increased gap for better spacing */
     width: 100%;
 }
 
 .input-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start; /* Align input rows to the start */
     gap: 20px;
     width: 100%;
 }
 
 .input-row > div {
-    flex: 1 1 calc(50% - 20px);
-    max-width: calc(50% - 20px);
-    min-width: 140px;
+    flex: 1 1 calc(50% - 10px); /* Adjust flex basis slightly for gap */
+    max-width: calc(50% - 10px);
+    min-width: 120px; /* Slightly reduced min-width for smaller screens */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
 .input-row.color-inputs > div {
-    flex: 1 1 calc(25% - 20px);
-    max-width: calc(25% - 20px);
-    min-width: 100px;
+    flex: 1 1 calc(25% - 15px); /* Adjusted for 4 columns with gap */
+    max-width: calc(25% - 15px);
+    min-width: 80px; /* Reduced min-width for color inputs */
 }
 
 .controls label {
@@ -182,8 +246,8 @@ h1 {
     font-size: 1.1em;
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    width: 100%;
-    margin: 15px 0px;
+    width: 100%; /* Keep 100% width within the sidebar */
+    margin: 5px 0px;
     box-shadow: 0 4px 10px var(--shadow-button);
 }
 
@@ -196,15 +260,16 @@ h1 {
     transform: translateY(0);
 }
 
-/* CANVAS - NÃO MUDAM NO DARK MODE */
+/* CANVAS - NÃO MUDAM NO DARK MODE (but variables are dynamic) */
 #canvas-wrapper {
     position: relative;
     display: inline-block;
-    border: 2px solid var(--canvas-wrapper-border);
-    background-color: var(--canvas-wrapper-bg);
+    border: 2px solid var(--canvas-wrapper-border); /* This variable is now static for both modes */
+    background-color: var(--canvas-wrapper-bg); /* This variable is now static for both modes */
     box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
     padding: 8px;
     border-radius: 10px;
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease; /* Add transition for theme change */
 }
 
 #canvas-container {
@@ -220,7 +285,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* box-shadow: 0 2px 5px var(--canvas-ball-shadow); */
+    /* box-shadow: 0 2px 5px var(--canvas-ball-shadow); */ /* Managed by SVG fill */
     z-index: 2;
     position: relative;
 }
@@ -235,10 +300,11 @@ h1 {
     z-index: 1;
     overflow: visible;
     filter: drop-shadow(0 0 3px var(--line-svg-shadow));
+    transition: filter 0.5s ease; /* Add transition for theme change */
 }
 
 .merge-line, .merge-rect, .custom-svg-connection {
-    transition: stroke-width 0.3s ease;
+    transition: stroke-width 0.3s ease, filter 0.5s ease; /* Add filter transition */
     filter: drop-shadow(0 0 3px var(--line-svg-shadow));
 }
 
@@ -246,13 +312,13 @@ h1 {
 .custom-svg-connection::before,
 .custom-svg-connection::after {
     box-shadow: none !important;
-    filter: none !important;
+    filter: none !important; /* Ensure no extra shadow on individual SVG elements */
 }
 
 /* Estilos do Botão de Alternância de Tema */
 .theme-toggle {
     position: fixed;
-    top: 20px;
+    top: 20px; /* Kept top for now, consider if you want it in the sidebar */
     right: 20px;
     background-color: var(--bg-container);
     border: 1px solid var(--border-color);
@@ -282,4 +348,39 @@ h1 {
 
 .theme-toggle .icon.hidden {
     display: none;
+}
+
+/* Media Queries for Responsiveness (Optional, but recommended) */
+@media (max-width: 768px) {
+    .main-layout {
+        flex-direction: column; /* Stack sidebar and canvas vertically on smaller screens */
+    }
+
+    .controls-sidebar,
+    .canvas-area {
+        width: 100%; /* Both take full width */
+        border-right: none; /* Remove right border on sidebar */
+        border-bottom: 1px solid var(--border-color); /* Add bottom border to sidebar */
+    }
+
+    .controls-sidebar {
+        padding-bottom: 10px; /* Adjust padding */
+    }
+
+    .canvas-area {
+        padding-top: 10px; /* Adjust padding */
+    }
+
+    .input-row > div,
+    .input-row.color-inputs > div {
+        flex: 1 1 100%; /* Stack all inputs vertically */
+        max-width: 100%;
+        min-width: unset; /* Remove min-width constraint */
+    }
+
+    .theme-toggle {
+        top: unset; /* Remove fixed top position */
+        bottom: 20px; /* Move to bottom right */
+        right: 20px;
+    }
 }
