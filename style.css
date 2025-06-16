@@ -14,14 +14,8 @@
     --canvas-wrapper-bg: #f8f8f8;
     --canvas-wrapper-border: #ddd;
     --canvas-ball-shadow: rgba(0,0,0,0.2);
-    --canvas-inner-bg: #FFF8F4; /* This should be the light mode default for the inner canvas */
+    --canvas-inner-bg: #FFF8F4;
     --line-svg-shadow: rgba(0,0,0,0.3);
-
-    /* Novas variáveis para gradientes radiais do corpo - Modo Claro */
-    --body-gradient-color1: #4444E1;
-    --body-gradient-color2: #E95426;
-    --body-gradient-color3: #D0B6EC;
-    --body-solid-fallback: #1a1a2e; /* Fallback para o corpo */
 }
 
 /* Dark Mode Variáveis */
@@ -37,38 +31,35 @@ body.dark-mode {
     --button-hover-bg: #5a4bba;
     --shadow-light: rgba(0, 0, 0, 0.6);
     --shadow-button: rgba(106, 90, 205, 0.4);
-    --canvas-wrapper-bg: #f8f8f8; /* Mantém o fundo do wrapper do canvas igual ao do modo claro */
-    --canvas-wrapper-border: #ddd; /* Mantém a borda do wrapper do canvas igual ao do modo claro */
-    --canvas-ball-shadow: rgba(255,255,255,0.1);
-    --canvas-inner-bg: #FFF8F4; /* Mantém o fundo interno do canvas igual ao --bg-container do modo claro */
-    --line-svg-shadow: rgba(255,255,255,0.2);
-
-    /* Novas variáveis para gradientes radiais do corpo - Modo Escuro */
-    --body-gradient-color1: #3a005f; /* Roxo mais escuro */
-    --body-gradient-color2: #0e3067; /* Azul mais escuro */
-    --body-gradient-color3: #0f1c3f; /* Cor sutil mais escura */
-    --body-solid-fallback: #1a1a2e; /* Mesmo fallback ou um escuro */
+    --canvas-wrapper-bg: #333; /* Adjusted for dark mode canvas */
+    --canvas-wrapper-border: #444; /* Adjusted for dark mode canvas */
+    --canvas-ball-shadow: rgba(255,255,255,0.1); /* Adjusted for dark mode */
+    --canvas-inner-bg: #2b2b2b; /* Adjusted for dark mode */
+    --line-svg-shadow: rgba(255,255,255,0.2); /* Adjusted for dark mode */
 }
 
 /* Estilos CSS Base */
 body {
     font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
+    /* Remove justify-content, align-items, and min-height here
+       as the .main-layout will handle the full screen flex */
+    min-height: 100vh; /* Keep for full height background */
     margin: 0;
-    padding: 0;
+    padding: 0; /* Remove body padding, move to internal elements */
     box-sizing: border-box;
-    transition: background 0.5s ease, color 0.5s ease; /* Garante transição para o background */
+    transition: background 0.5s ease;
     color: var(--text-primary);
 
-    /* Gradientes de fundo para o corpo - AGORA USANDO VARIÁVEIS */
+    /* Background gradients for body */
     background:
-        radial-gradient(circle at 10% 20%, var(--body-gradient-color1) 0%, transparent 70%),
-        radial-gradient(circle at 80% 70%, var(--body-gradient-color2) 0%, transparent 70%),
-        radial-gradient(circle at 40% 95%, var(--body-gradient-color3) 0%, transparent 70%),
-        var(--body-solid-fallback); /* Cor sólida de fallback */
+        radial-gradient(circle at 10% 20%, #4444E1 0%, transparent 70%),
+        radial-gradient(circle at 80% 70%, #E95426 0%, transparent 70%),
+        radial-gradient(circle at 40% 95%, #D0B6EC 0%, transparent 70%),
+        #1a1a2e; /* Cor sólida de fallback */
     background-size: 150% 150%, 150% 150%, 150% 150%, cover;
     background-position: top left, bottom right, bottom center, center center;
     background-repeat: no-repeat;
+    /* overflow: auto;  Managed by main-layout */
 }
 
 /* New main layout container */
@@ -107,12 +98,12 @@ body {
 
 /* Existing .container styles are now primarily for .controls-sidebar */
 /* The old `.container` class is no longer strictly needed for the main layout,
-    but its styling can be applied to `.controls-sidebar`. */
+   but its styling can be applied to `.controls-sidebar`. */
 .container {
     /* This class likely defined the overall card-like container.
-        Its styles are now largely integrated into .controls-sidebar.
-        You can keep this if you still have an element with this class for other purposes,
-        but for the main layout, it's replaced by .main-layout, .controls-sidebar, and .canvas-area. */
+       Its styles are now largely integrated into .controls-sidebar.
+       You can keep this if you still have an element with this class for other purposes,
+       but for the main layout, it's replaced by .main-layout, .controls-sidebar, and .canvas-area. */
     background-color: var(--bg-container); /* Re-applied to sidebar */
     padding: 25px 30px; /* Re-applied to sidebar */
     border-radius: 10px; /* Re-applied to sidebar */
@@ -241,7 +232,7 @@ h1 {
     color: white;
     padding: 12px 25px;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
     font-weight: 600;
@@ -264,8 +255,8 @@ h1 {
 #canvas-wrapper {
     position: relative;
     display: inline-block;
-    border: 2px solid var(--canvas-wrapper-border); /* This variable is now static for both modes */
-    background-color: var(--canvas-wrapper-bg); /* This variable is now static for both modes */
+    border: 2px solid var(--canvas-wrapper-border);
+    background-color: var(--canvas-wrapper-bg);
     box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
     padding: 8px;
     border-radius: 10px;
